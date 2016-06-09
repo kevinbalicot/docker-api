@@ -31,7 +31,7 @@ export class ListContainer {
     constructor (http: Http) {
         this.containers = [];
 
-        http.get('http://localhost:8080/containers')
+        http.get('http://92.222.88.16:8080/containers')
             .map(res => res.json())
             .subscribe(containers => this.containers = containers);
     }

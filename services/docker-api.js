@@ -12,7 +12,7 @@ class DockerApi {
         --cacert $DOCKER_CERT_PATH/ca.pem \
         `;*/
 
-        let url = `curl --unix-socket /var/run/docker.sock http:/${route}`;
+        let url = `--unix-socket /var/run/docker.sock http:/${route} `;
 
         if (headers.length > 0) {
             headers.forEach(header => url += `--Header "${header}"`);
@@ -23,9 +23,11 @@ class DockerApi {
 
     _exec (command) {
         return new Promise((resolve, reject) => {
-            exec(command, { maxBuffer: 1024 * 500 }, (err, stdout, stderr) => {
+            console.log(command);
+	    exec(command, { maxBuffer: 1024 * 500 }, (err, stdout, stderr) => {
 
-                if (!!err) {
+                console.log(stdout);
+	        if (!!err) {
                     reject(err);
                 } else {
                     try {

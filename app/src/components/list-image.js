@@ -26,7 +26,7 @@ export class ListImage {
     constructor (http: Http) {
         this.images = [];
 
-        http.get('http://localhost:8080/images')
+        http.get('http://92.222.88.16:8080/images')
             .map(res => res.json())
             .subscribe(images => this.images = images);
     }
