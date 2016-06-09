@@ -28,6 +28,20 @@ app.post('/images', (req, res) => {
     }
 );
 
+/**
+Example
+options = {
+    Image: 'node:6',
+    Volumes: { "/volume": {} },
+    Cmd: ['node', '/volume/server.js'],
+    ExposedPorts: { "8080/tcp": {} },
+    Env: ['NODE_PORT=8080'],
+    HostConfig: {
+        Binds: ['/var/projects/my-project:/volume'],
+        PortBindings: { "8080/tcp": [{ HostPort: "8080" }] }
+    }
+};
+**/
 app.post('/containers/run', (req, res) => {
 
     if (!req.body) {
@@ -35,7 +49,7 @@ app.post('/containers/run', (req, res) => {
     }
 
     dockerApi.runContainer(req.body, req.params.name || null)
-        .then(data => res.send({ message: 'ok '}))
+        .then(data => res.send({ message: data }))
         .catch(err => res.status(500).send({ error: err }));
     }
 );
@@ -61,47 +75,7 @@ app.post('/containers/:id/kill', (req, res) => {
     }
 );
 
-app.get('/instance', (req, res) => {
-
-    utils.getFreePort(port => {
-        console.log(port);
-        const options = {
-            Image: 'node:6',
-            Volumes: { "/volume": {} },
-            Cmd: ['node', '/volume/server.js'],
-            ExposedPorts: { "8080/tcp": {} },
-            Env: ['NODE_PORT=8080'],
-            HostConfig: {
-                Binds: ['/Users/kevinbalicot/Workspace/server-test:/volume'],
-                PortBindings: { "8080/tcp": [{ HostPort: String(port) }] }
-            }
-        };
-
-        dockerApi.runContainer(options)
-            .then(data => res.send({ message: 'Instance run on port ' + port }))
-            .catch(err => res.status(500).send({ error: err }));
-    });
-});
-
 const port = process.env.NODE_PORT || 8080;
 
 app.listen(port);
 console.log(`🌏  Server start on port ${port}`);
-
-
-/*const options = {
-    Image: 'node:6',
-    Volumes: { "/volume": {} },
-    Cmd: ['node', '/volume/server.js'],
-    ExposedPorts: { "8080/tcp": {} },
-    Env: ['NODE_PORT=8080'],
-    HostConfig: {
-        Binds: ['/Users/kevinbalicot/Workspace/server-test:/volume'],
-        PortBindings: { "8080/tcp": [{ HostPort: "8080" }] }
-    }
-};
-
-dockerApi.runContainer(options, 'toto')
-    .then(data => console.log(data))
-    .catch(err => console.log(err));
-//dockerApi.startContainer().then(data => console.log(data)).catch(err => console.log(err));*/

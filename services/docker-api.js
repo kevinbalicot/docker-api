@@ -23,11 +23,8 @@ class DockerApi {
 
     _exec (command) {
         return new Promise((resolve, reject) => {
-            console.log(command);
-	    exec(command, { maxBuffer: 1024 * 500 }, (err, stdout, stderr) => {
-
-                console.log(stdout);
-	        if (!!err) {
+           exec(command, { maxBuffer: 1024 * 500 }, (err, stdout, stderr) => {
+                if (!!err) {
                     reject(err);
                 } else {
                     try {
