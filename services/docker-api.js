@@ -47,6 +47,11 @@ class DockerApi {
         return this._exec(command);
     }
 
+    _delete (route) {
+        const command = `curl -X DELETE ${this._generateUrl(route)}`;
+        return this._exec(command);
+    }
+
     /**
      * Return list of images
      */
@@ -93,7 +98,14 @@ class DockerApi {
      * Kill a container
      */
     killContainer (id, signal = 'SIGKILL') {
-        return this._post(`containers/${id}/kill?signal=${wait}`, {}, ["Content-Type:application/json"]);
+        return this._post(`containers/${id}/kill?signal=${signal}`, {}, ["Content-Type:application/json"]);
+    }
+
+    /**
+     * Remove a containers
+     */
+    removeContainer (id, deleteVolume = false, force = false) {
+        return this._delete(`/containers/${id}?v=${deleteVolume}&force=${force}`);
     }
 
     /**

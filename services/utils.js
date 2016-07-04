@@ -5,6 +5,9 @@ const net = require('net');
 
 class Utils {
 
+    /**
+     * Test if port is opened
+     */
     isPortOpened (port) {
         return new Promise((resolve, reject) => {
             exec(`netstat -an | grep ${port} | grep LISTEN`, (err, stdout, stderr) => {
@@ -18,6 +21,9 @@ class Utils {
         });
     }
 
+    /**
+     * Get next free port
+     */
     getFreePort (callback) {
         let server = net.createServer();
 
