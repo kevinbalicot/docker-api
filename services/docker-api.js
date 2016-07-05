@@ -21,6 +21,25 @@ class DockerApi {
         return url;
     }
 
+    _parseStdout (stdout) {
+        try {
+            let result = JSON.parse(stdout);
+            return result;
+        } catch (e) {
+            return stdout;
+        }
+    }
+
+    _formatStdout (stdout) {
+        let result = stdout.split("\r\n");
+
+        if (result.length === 1) {
+            return this._parseStdout(result[0]);
+        }
+
+        return result.filter(res => !!res).map(res => this._parseStdout(res));
+    }
+
     _exec (command) {
         return new Promise((resolve, reject) => {
            exec(command, { maxBuffer: 1024 * 500 }, (err, stdout, stderr) => {
@@ -64,6 +83,13 @@ class DockerApi {
      */
     createImage (image) {
         return this._post('images/create?fromImage=' + image);
+    }
+
+    /**
+     * Remove an image
+     */
+    removeImage (name, force = false, norpune = false) {
+        return this._delete(`/containers/${name}?force=${force}&norpune=${norpune}`);
     }
 
     /**

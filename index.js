@@ -44,6 +44,18 @@ app.post('/images', (req, res) => {
 );
 
 /**
+ * Delete an image by name
+ * Params
+ *      ?force : force delete
+ *      ?noprune : ???
+ */
+app.delete('/iamges/:name', (req, res) => {
+    dockerApi.removeContainer(req.params.name, req.params.force || false, req.params.noprune || false)
+        .then(() => res.send({ message: 'ok '}))
+        .catch(err => res.status(500).send({ error: err }));
+});
+
+/**
  * Run a container with docker params
  * Body
  *      json file, example
