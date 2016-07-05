@@ -49,8 +49,8 @@ app.post('/images', (req, res) => {
  *      ?force : force delete
  *      ?noprune : ???
  */
-app.delete('/iamges/:name', (req, res) => {
-    dockerApi.removeContainer(req.params.name, req.params.force || false, req.params.noprune || false)
+app.delete('/images/:name', (req, res) => {
+    dockerApi.removeContainer(req.params.name, req.query.force || false, req.query.noprune || false)
         .then(() => res.send({ message: 'ok '}))
         .catch(err => res.status(500).send({ error: err }));
 });
@@ -122,7 +122,7 @@ app.post('/containers/:id/kill', (req, res) => {
  *      ?force : force delete
  */
 app.delete('/containers/:id', (req, res) => {
-    dockerApi.removeContainer(req.params.id, req.params.v || false, req.params.force || false)
+    dockerApi.removeContainer(req.params.id, req.query.v || false, req.query.force || false)
         .then(() => res.send({ message: 'ok '}))
         .catch(err => res.status(500).send({ error: err }));
 });
