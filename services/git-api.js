@@ -23,7 +23,13 @@ class GitApi {
      */
     getRepositories () {
         return new Promise((resolve, reject) => {
-            fs.readdir(this.repositoriesPath, result => resolve(result || []));
+            fs.readdir(this.repositoriesPath, (err, files) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(files);
+                }
+            });
         });
     }
 
