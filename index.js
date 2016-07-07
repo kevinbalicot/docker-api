@@ -52,7 +52,7 @@ app.post('/images', (req, res) => {
  */
 app.delete('/images/:name', (req, res) => {
     dockerApi.removeImage(req.params.name, req.query.force || false, req.query.noprune || false)
-        .then(data => res.send([{ status: data }]))
+        .then(data => res.send(data))
         .catch(err => res.status(500).send({ error: err }));
 });
 
