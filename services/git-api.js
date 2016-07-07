@@ -10,10 +10,11 @@ class GitApi {
     constructor () {
         this.repositoriesPath = SOURCES_PATH;
 
-        let fileState = fs.statSync(this.repositoriesPath);
-
-        if (fileState.isDirectory()) {
+        // @TODO do it with better way
+        try {
             fs.mkdirSync(this.repositoriesPath);
+        } catch (e) {
+            //do nothing
         }
     }
 
@@ -33,8 +34,7 @@ class GitApi {
      */
     cloneRepository (path, name) {
         return git.Clone(path, `${this.repositoriesPath}/${name}.git`)
-            .then(repository => { status: 'Repository cloned' })
-        });
+            .then(repository => { status: 'Repository cloned' });
     }
 }
 
