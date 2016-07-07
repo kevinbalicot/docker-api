@@ -13,6 +13,7 @@
     "body-parser": "^1.15.0",
     "cors": "^2.7.1",
     "express": "^4.13.4",
+    "nodegit": "^0.14.1",
     "portfinder": "^1.0.3"
   }
 }

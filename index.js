@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dockerApi = require('./services/docker-api');
+const gitApi = require('./services/git-api');
 const utils = require('./services/utils');
 const app = express();
 
@@ -34,7 +35,7 @@ app.get('/images', (req, res) => dockerApi.getImages().then(data => res.send(dat
 app.post('/images', (req, res) => {
 
     if (!req.body.image) {
-        return res.status(422).send({ error: 'Need image.' });
+        return res.status(422).send({ error: 'Need image name' });
     }
 
     dockerApi.createImage(req.body.image)
@@ -46,12 +47,12 @@ app.post('/images', (req, res) => {
 /**
  * Delete an image by name
  * Params
- *      ?force : force delete
- *      ?noprune : ???
+ *      ?force : force delete (optional, default: false)
+ *      ?noprune : ??? (optional, default: false)
  */
 app.delete('/images/:name', (req, res) => {
-    dockerApi.removeContainer(req.params.name, req.query.force || false, req.query.noprune || false)
-        .then(() => res.send({ message: 'ok '}))
+    dockerApi.removeImage(req.params.name, req.query.force || false, req.query.noprune || false)
+        .then(data => res.send([{ status: data }]))
         .catch(err => res.status(500).send({ error: err }));
 });
 
@@ -76,11 +77,11 @@ app.delete('/images/:name', (req, res) => {
 app.post('/containers/run', (req, res) => {
 
     if (!req.body) {
-        return res.status(422).send({ error: 'Need options.' });
+        return res.status(422).send({ error: 'Need options' });
     }
 
     dockerApi.runContainer(req.body, req.params.name || null)
-        .then(data => res.send({ message: data }))
+        .then(data => res.send([{ status: data || 'Container running' }]))
         .catch(err => res.status(500).send({ error: err }));
     }
 );
@@ -90,7 +91,7 @@ app.post('/containers/run', (req, res) => {
  */
 app.post('/containers/:id/start', (req, res) => {
     dockerApi.startContainer(req.params.id)
-        .then(data => res.send(data))
+        .then(data => res.send([{ status: data || 'Container started' }]))
         .catch(err => res.status(500).send({ error: err }));
     }
 );
@@ -100,7 +101,7 @@ app.post('/containers/:id/start', (req, res) => {
  */
 app.post('/containers/:id/stop', (req, res) => {
     dockerApi.stopContainer(req.params.id)
-        .then(() => res.send({ message: 'ok '}))
+        .then(data => res.send([{ status: data || 'Container stopped' }]))
         .catch(err => res.status(500).send({ error: err }));
     }
 );
@@ -110,7 +111,7 @@ app.post('/containers/:id/stop', (req, res) => {
  */
 app.post('/containers/:id/kill', (req, res) => {
     dockerApi.killContainer(req.params.id)
-        .then(() => res.send({ message: 'ok '}))
+        .then(data => res.send([{ status: data || 'Container killed' }]))
         .catch(err => res.status(500).send({ error: err }));
     }
 );
@@ -118,13 +119,68 @@ app.post('/containers/:id/kill', (req, res) => {
 /**
  * Delete a container by id
  * Params
- *      ?v : delete volume
- *      ?force : force delete
+ *      ?v : delete volume (optional, default: false)
+ *      ?force : force delete (optional, default: false)
  */
 app.delete('/containers/:id', (req, res) => {
     dockerApi.removeContainer(req.params.id, req.query.v || false, req.query.force || false)
-        .then(() => res.send({ message: 'ok '}))
+        .then(data => res.send([{ status: data || 'Container deleted' }]))
         .catch(err => res.status(500).send({ error: err }));
+});
+
+// Sources
+
+/**
+ * Create repository
+ * Params
+ *      ?name : repository name
+ */
+app.post('/repositories', (req, res) => {
+
+    if (!req.body.name) {
+        return res.status(422).send({ error: 'Need repository name' });
+    }
+
+    gitApi.createRepository(req.body.name)
+        .then(data => res.send(data))
+        .catch(err => res.status(500).send(err));
+});
+
+/**
+ * Clone a repository
+ * Params
+ *      ?path: url of repository
+ *      ?name : repository name directory
+ */
+app.post('/repositories/clone', (req, res) => {
+
+    if (!req.body.path) {
+        return res.status(422).send({ error: 'Need repository path' });
+    }
+
+    if (!req.body.name) {
+        return res.status(422).send({ error: 'Need repository name' });
+    }
+
+    gitApi.cloneRepository(req.body.path, req.body.name)
+        .then(data => res.send(data))
+        .catch(err => res.status(500).send(err));
+});
+
+/**
+ * Pull repository
+ * Params
+ *      ?name : repository name
+ */
+app.post('/repositories/pull', (req, res) => {
+
+    if (!req.body.name) {
+        return res.status(422).send({ error: 'Need repository name' });
+    }
+
+    gitApi.pullRepository(req.body.name)
+        .then(data => res.send(data))
+        .catch(err => res.status(500).send(err));
 });
 
 const port = process.env.NODE_PORT || 8080;

@@ -46,11 +46,7 @@ class DockerApi {
                 if (!!err) {
                     reject(err);
                 } else {
-                    try {
-                        resolve(JSON.parse(stdout));
-                    } catch (e) {
-                        resolve(stdout);
-                    }
+                    resolve(this._formatStdout(stdout));
                 }
             });
         });
@@ -88,8 +84,8 @@ class DockerApi {
     /**
      * Remove an image
      */
-    removeImage (name, force = false, norpune = false) {
-        return this._delete(`/containers/${name}?force=${force}&norpune=${norpune}`);
+    removeImage (name, force = false, noprune = false) {
+        return this._delete(`images/${name}?force=${force}&noprune=${noprune}`);
     }
 
     /**
@@ -131,7 +127,7 @@ class DockerApi {
      * Remove a containers
      */
     removeContainer (id, deleteVolume = false, force = false) {
-        return this._delete(`/containers/${id}?v=${deleteVolume}&force=${force}`);
+        return this._delete(`containers/${id}?v=${deleteVolume}&force=${force}`);
     }
 
     /**
