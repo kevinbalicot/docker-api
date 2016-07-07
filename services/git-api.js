@@ -19,13 +19,24 @@ class GitApi {
     }
 
     /**
+     * Return list of repositories
+     */
+    getRepositories () {
+        return new Promise((resolve, reject) => {
+            fs.readdir(this.repositoriesPath, result => resolve(result || []));
+        });
+    }
+
+    /**
      * Create a repository
      * @param name : repository name
-     * @param bare : Initialize the repository as bare or "checked out"
+     * @param isBare : Initialize the repository as bare or "checked out"
      */
-    createRepository (name, bare = true) {
-        return git.Repository.init(`${this.repositoriesPath}/${name}.git`, bare)
-            .then(repository => { status: 'Repository created' });
+    createRepository (name, isBare = 1) {
+        return git.Repository.init(`${this.repositoriesPath}/${name}.git`, isBare)
+            .then(repository => {
+                return { status: 'Repository created' };
+            });
     }
 
     /**
@@ -34,7 +45,9 @@ class GitApi {
      */
     cloneRepository (path, name) {
         return git.Clone(path, `${this.repositoriesPath}/${name}.git`)
-            .then(repository => { status: 'Repository cloned' });
+            .then(repository => {
+                return { status: 'Repository cloned' };
+            });
     }
 }
 

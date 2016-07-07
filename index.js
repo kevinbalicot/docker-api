@@ -131,9 +131,16 @@ app.delete('/containers/:id', (req, res) => {
 // Sources
 
 /**
+ * Get list of repositories
+ */
+app.get('/repositories', (req, res) => gitApi.getRepositories().then(data => res.send(data)));
+
+/**
  * Create repository
- * Params
+ * Body
  *      ?name : repository name
+ * Params
+ *      ?is_bare : Initialize the repository as bare or "checked out" (Optional : default 1)
  */
 app.post('/repositories', (req, res) => {
 
@@ -141,14 +148,14 @@ app.post('/repositories', (req, res) => {
         return res.status(422).send({ error: 'Need repository name' });
     }
 
-    gitApi.createRepository(req.body.name)
-        .then(data => res.send(data))
+    gitApi.createRepository(req.body.name, req.query.is_bare || 1)
+        .then(data => res.send([data]))
         .catch(err => res.status(500).send(err));
 });
 
 /**
  * Clone a repository
- * Params
+ * Body
  *      ?path: url of repository
  *      ?name : repository name directory
  */
@@ -163,13 +170,13 @@ app.post('/repositories/clone', (req, res) => {
     }
 
     gitApi.cloneRepository(req.body.path, req.body.name)
-        .then(data => res.send(data))
+        .then(data => res.send([data]))
         .catch(err => res.status(500).send(err));
 });
 
 /**
  * Pull repository
- * Params
+ * Body
  *      ?name : repository name
  */
 app.post('/repositories/pull', (req, res) => {
@@ -179,7 +186,7 @@ app.post('/repositories/pull', (req, res) => {
     }
 
     gitApi.pullRepository(req.body.name)
-        .then(data => res.send(data))
+        .then(data => res.send([data]))
         .catch(err => res.status(500).send(err));
 });
 
