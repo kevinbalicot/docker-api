@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const git = require('nodegit');
+const exec = require('child_process').exec;
 
 const SOURCES_PATH = '/var/docker-sources';
 
@@ -42,7 +43,7 @@ class GitApi {
         return git.Repository.init(`${this.repositoriesPath}/${name}.git`, isBare)
             .then(repository => {
                 // VERY VERY BAD :O
-                fs.chmodSync(`${this.repositoriesPath}/${name}.git`, 511);
+                exec(`chmod -R 777 ${this.repositoriesPath}/${name}.git`);
                 return { status: 'Repository created' };
             });
     }
