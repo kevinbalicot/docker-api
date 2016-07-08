@@ -42,7 +42,7 @@ class GitApi {
         return git.Repository.init(`${this.repositoriesPath}/${name}.git`, isBare)
             .then(repository => {
                 // VERY VERY BAD :O
-                fs.chmodSync(`${this.repositoriesPath}/${name}.git`, 0777);
+                fs.chmodSync(`${this.repositoriesPath}/${name}.git`, 511);
                 return { status: 'Repository created' };
             });
     }
