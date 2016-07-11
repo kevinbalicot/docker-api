@@ -53,7 +53,7 @@ class GitApi {
      * @param name : name of repository directory
      */
     cloneRepository (path, name) {
-        return git.Clone(path, `${this.repositoriesPath}/${name}.git`)
+        return git.Clone(path, `${this.repositoriesPath}/${name}`)
             .then(repository => {
                 return { status: 'Repository cloned' };
             });

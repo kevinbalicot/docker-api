@@ -18,6 +18,13 @@ app.use(bodyParser.json());
 app.get('/hello', (req, res) => res.send({ message: 'ok' }));
 
 /**
+ * Get free port
+ */
+app.get('/free-port', (req, res) => {
+    utils.getFreePort(port => res.send({ message: port }));
+});
+
+/**
  * Get list of containers
  */
 app.get('/containers', (req, res) => dockerApi.getContainers().then(data => res.send(data)));
