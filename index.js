@@ -87,7 +87,7 @@ app.post('/containers/run', (req, res) => {
         return res.status(422).send({ error: 'Need options' });
     }
 
-    dockerApi.runContainer(req.body, req.params.name || null)
+    dockerApi.runContainer(req.body, req.query.name || null)
         .then(data => res.send([{ status: data || 'Container running' }]))
         .catch(err => res.status(500).send({ error: err }));
     }

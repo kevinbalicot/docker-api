@@ -29,7 +29,10 @@ class Utils {
 
         server.listen(0);
         server.on('listening', () => {
-            callback(server.address().port);
+            let port = server.address().port;
+            server.close(() => {
+                callback(port);
+            });
         });
     }
 }
