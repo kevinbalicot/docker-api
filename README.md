@@ -20,7 +20,7 @@ $ NODE_PORT=8080 npm start
 ### POST
 * `/images` : create a new image
     * **name** : image name
-* `/images/<name>` : delete an image by <name>
+* `/images/<name>` : delete an image by name
     * **force** : force delete (optional, default: false)
     * **noprune** : (optional, default: false)
 * `/containers/run` : run a container with docker file configuration
@@ -42,9 +42,9 @@ Body example :
 }
 
 ```
-* `/containers/<id>/start` : start a container by <id>
-* `/containers/<id>/stop` : stop a container by <id>
-* `/containers/<id>/kill` : kill a container by <id>
+* `/containers/<id>/start` : start a container by id
+* `/containers/<id>/stop` : stop a container by id
+* `/containers/<id>/kill` : kill a container by id
 
 ### DELETE
-* `/containers/<id>` : delete a container by <id>
+* `/containers/<id>` : delete a container by id
